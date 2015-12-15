@@ -30,18 +30,6 @@ class TreeSetTests: XCTestCase {
         preorderTraversal(notNilNode.right, result: &result)
     }
     
-    func testThatItUpdatesTheHeightCorrectly() {
-        let root = TreeNode(element: 2)
-        let leftNode = TreeNode(element: 1)
-        leftNode.left = TreeNode(element: 5)
-        let rightNode = TreeNode(element: 3)
-        root.left = leftNode
-        root.right = rightNode
-        XCTAssertEqual(rightNode.height, 1, "root right node height must be 1")
-        XCTAssertEqual(root.height, 3, "root height must be 3 here")
-        XCTAssertEqual(leftNode.height, 2, "root left node height must be 2")
-    }
-    
     func testThatItInsertNodesCorrectly() {
         let tree = AVLTree<Int>()
         do {
