@@ -13,11 +13,11 @@ class TreeSetTests: XCTestCase {
     
     override func setUp() {
         super.setUp()
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+        
     }
     
     override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+        
         super.tearDown()
     }
     
@@ -30,15 +30,31 @@ class TreeSetTests: XCTestCase {
         preorderTraversal(notNilNode.right, result: &result)
     }
     
+    func buildTreeWith<E: Comparable>(elements: [E]) throws -> AVLTree<E> {
+        let tree = AVLTree<E>()
+        for element in elements {
+            try tree.insert(element)
+        }
+        return tree
+    }
+    
     func testThatItInsertNodesCorrectly() {
-        let tree = AVLTree<Int>()
         do {
-            try tree.insert(10)
-            try tree.insert(20)
-            try tree.insert(30)
-            try tree.insert(40)
-            try tree.insert(50)
-            try tree.insert(25)
+            let tree = try buildTreeWith([10, 20, 30, 40, 50, 25]);
+            
+            var preorder: [Int] = [Int]()
+            preorderTraversal(tree.root, result: &preorder)
+            XCTAssertEqual(preorder, [30,20,10,25,40,50], "tree insertion should result as balanced BST")
+        } catch TreeAccessError.InvalidNode {
+            XCTAssert(false, "Should not throw tree access error")
+        } catch {
+            XCTAssert(false, "Should not have other errors")
+        }
+    }
+    
+    func testThatItIgnoreDuplicateItems() {
+        do {
+            let tree = try buildTreeWith([10, 20, 30, 40, 50, 25, 25, 40,30]);
             
             var preorder: [Int] = [Int]()
             preorderTraversal(tree.root, result: &preorder)
@@ -51,16 +67,7 @@ class TreeSetTests: XCTestCase {
     }
     
     func testThatItRemoveTheNodeAndTreeStillBalanced() {
-        let tree = AVLTree<Int>()
-        try! tree.insert(9)
-        try! tree.insert(5)
-        try! tree.insert(10)
-        try! tree.insert(0)
-        try! tree.insert(6)
-        try! tree.insert(11)
-        try! tree.insert(-1)
-        try! tree.insert(1)
-        try! tree.insert(2)
+        let tree = try! buildTreeWith([9,5,10,0,6,11,-1,1,2])
         do {
             try tree.remove(10)
             var preorder: [Int] = [Int]()
@@ -74,5 +81,32 @@ class TreeSetTests: XCTestCase {
             XCTAssert(false, "Should not trigger any errors")
         }
         
+    }
+    
+    func testThatItGetsFirstItemCorrectly() {
+        let treeSet = try! TreeSet(elements: [9,5,10,0,6,11,-1,1,2])
+        XCTAssertEqual(treeSet.getFirst(), -1)
+    }
+    
+    func testThatItGetsLastItemCorrectly() {
+        let treeSet = try! TreeSet(elements: [9,5,10,0,6,11,-1,1,2])
+        XCTAssertEqual(treeSet.getLast(), 11)
+    }
+    
+    func testThatItSearchCorrectly() {
+        let treeSet = try! TreeSet(elements: [9,5,10,0,6,11,-1,1,2])
+        XCTAssertTrue(treeSet.contains(11))
+        XCTAssertFalse(treeSet.contains(20))
+    }
+    
+    func testThatItImplementsGeneratorTypeCorrectly() {
+        let treeSet = try! TreeSet(elements: [9,5,10,0,6,11,-1,1,2])
+        var generator = treeSet.generate()
+        let first = generator.next()
+        XCTAssertEqual(first, -1)
+        let second = generator.next()
+        XCTAssertEqual(second, 0)
+        let third = generator.next()
+        XCTAssertEqual(third, 1)
     }
 }
