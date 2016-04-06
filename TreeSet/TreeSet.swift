@@ -167,7 +167,7 @@ internal class AVLTree <E: Comparable> {
     internal func insert(newElement: E) throws {
         do {
             root = try insertToNode(root, newElement: newElement)
-            size++
+            size += 1
         }
         
     }
@@ -175,7 +175,7 @@ internal class AVLTree <E: Comparable> {
     internal func remove(element: E) throws {
         do {
             root = try delete(root, element: element)
-            size--
+            size -= 1
         }
         
     }
